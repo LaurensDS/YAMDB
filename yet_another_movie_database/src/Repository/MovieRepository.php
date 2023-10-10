@@ -37,6 +37,16 @@ class MovieRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function searchByMovieTitle(Movie $movie)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.title LIKE :text')
+            ->setParameter('text', '%' . $movie . '%')
+            ->getQuery()
+            ->getResult();
+
+    }
+
 //    /**
 //     * @return Movie[] Returns an array of Movie objects
 //     */

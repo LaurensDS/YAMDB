@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Form\MovieType;
+use App\Form\SearchType;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -16,36 +17,49 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/movie')]
 class MovieController extends AbstractController
 {
-    #[Route('/', name: 'app_movie_index', methods: ['GET'])]
+    #[Route('/', name: 'app_movie_index', methods: ['GET','POST'])]
     public function index(Request $request, MovieRepository $movieRepository, EntityManagerInterface $entityManager): Response
     {
 
         $page = $request->query->get('page', 1);
         $pageSize = $request->query->get('pageSize', 10); // Adjust the page size as needed
-    
+
         $repository = $entityManager->getRepository(Movie::class);
         $queryBuilder = $repository->createQueryBuilder('e');
-    
+
         // Perform any additional queries or filters as needed
         // $queryBuilder->andWhere(...);
-    
+
         // Create a Paginator instance
         $paginator = new Paginator($queryBuilder->getQuery());
 
-           // Paginate the results
-    $paginator
-    ->getQuery()
-    ->setFirstResult(($page - 1) * $pageSize)
-    ->setMaxResults($pageSize);
+        // Paginate the results
+        $paginator
+            ->getQuery()
+            ->setFirstResult(($page - 1) * $pageSize)
+            ->setMaxResults($pageSize);
 
-    $results = $paginator->getIterator()->getArrayCopy();
-    return $this->render('movie/index.html.twig',['pagination' => [
-        'movies' => $results,
-        'page' => $page,
-        'pageSize' => $pageSize,
-        'totalItems' => $paginator->count(),
-        'pages' => ceil($paginator->count() / $pageSize),
-    ]]);
+        $results = $paginator->getIterator()->getArrayCopy();
+        
+        $form = $this->createForm(SearchType::class);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $task = $form->getData();
+            $results = $movieRepository->searchByMovieTitle($task);
+        }
+
+
+        return $this->render('movie/index.html.twig', [
+            'pagination' => [
+                'movies' => $results,
+                'page' => $page,
+                'pageSize' => $pageSize,
+                'totalItems' => $paginator->count(),
+                'pages' => ceil($paginator->count() / $pageSize),
+                'form' => $form->createView(),
+            ]
+        ]);
 
         return $this->render('movie/index.html.twig', [
             'movies' => $results,
@@ -108,6 +122,27 @@ class MovieController extends AbstractController
 
         return $this->redirectToRoute('app_movie_index', [], Response::HTTP_SEE_OTHER);
     }
-    
+
+    public function search(Request $request, EntityManagerInterface $entityManager)
+    {
+        $form = $this->createForm(SearchType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $searchTerm = $form->get('search')->getData();
+
+            // Perform your search query here, e.g., using Doctrine
+            $items = $entityManager->getRepository(Movie::class)->findBySearchTerm($searchTerm);
+            dd($items);
+            return $this->render('search/results.html.twig', [
+                'items' => $items,
+            ]);
+        }
+
+        return $this->render('search/search.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 
 }

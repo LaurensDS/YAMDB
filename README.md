@@ -16,8 +16,6 @@ This repository contains a Symfony project configured to work with [DDEV](https:
 - [Database Setup](#database-setup)
   - [Running Migrations](#running-migrations)
 - [API Data Import](#api-data-import)
-- [Development Workflow](#development-workflow)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Prerequisites
@@ -104,29 +102,12 @@ To import data from an API, you can use the following custom command:
 2. Execute the API data import command:
 
    ```bash
-   php bin/console app:import-api-data
+   php bin/console ImportMoviesCommand
    ```
 
 This command should fetch data from the API and populate your database.
 
-## Development Workflow
-
-Follow these best practices when working on the project:
-
-1. Create feature branches for new development.
-2. Use Git for version control.
-3. Document your code and update this README file as needed.
-4. Make sure the application is working properly before pushing changes.
-5. Write unit and functional tests for your code.
-
-## Contributing
-
-If you'd like to contribute to this project, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix.
-3. Make your changes and test them.
-4. Submit a pull request, explaining the changes you made and why they are necessary.
+Don't forget to add your Access Token fom [TMDB](https://developer.themoviedb.org/reference/intro/authentication) to the .env file
 
 ## License
 

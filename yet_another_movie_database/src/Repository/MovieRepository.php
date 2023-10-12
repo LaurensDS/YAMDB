@@ -22,20 +22,6 @@ class MovieRepository extends ServiceEntityRepository
         parent::__construct($registry, Movie::class);
     }
 
-    public function getMoviePaginator(Movie $movie, int $offset): Paginator
-    {
-        $query = $this->createQueryBuilder('c')
-            ->andWhere('c.conference = :conference')
-            ->setParameter('conference', $movie)
-            ->orderBy('c.createdAt', 'DESC')
-            ->setMaxResults(self::PAGINATOR_PER_PAGE)
-            ->setFirstResult($offset)
-            ->getQuery()
-        ;
-
-        return new Paginator($query);
-    }
-
     public function searchByMovieTitle(Movie $movie)
     {
         return $this->createQueryBuilder('e')

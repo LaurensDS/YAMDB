@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class SearchType extends AbstractType
+class SearchbarType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -18,13 +18,13 @@ class SearchType extends AbstractType
             'attr' => [
                 'placeholder' => 'Search'
             ],
-            'empty_data' => '',
             'required' => false
         ])
         ->add('save', SubmitType::class, [
             'attr' => ['class' => 'save'],
-        ]);
-        ;
+        ])
+        ->setMethod('GET'); // setMethod GET, otherwise pagination with search does not work
+        
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -4,14 +4,16 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Form\MovieType;
-use App\Form\SearchType;
+use App\Form\SearchbarType;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/movie')]
@@ -21,20 +23,16 @@ class MovieController extends AbstractController
     public function index(Request $request, MovieRepository $movieRepository,PaginatorInterface $paginator, EntityManagerInterface $entityManager): Response
     {
    
-        $form = $this->createForm(SearchType::class);
+        $form = $this->createForm(SearchbarType::class);
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
             $task = $form->getData();
             $query = $movieRepository->searchByMovieTitle($task); // Assuming you have a custom method for this in your repository
         } else {
-            $query = $entityManager->getRepository(Movie::class)
-                ->createQueryBuilder('e')
-                // Add any additional queries or filters here if needed
-                ->getQuery();
+            $query = $movieRepository->findAll();
         }
     
-        $query = $movieRepository->findAll();
     
         $pagination = $paginator->paginate(
             $query, /* query NOT result */
@@ -45,7 +43,7 @@ class MovieController extends AbstractController
         $results = $pagination;
     
         return $this->render('movie/index.html.twig', [
-            'pagination' => $pagination, 'movies' => $results, 'form' => $form->createView(),
+            'pagination' => $pagination, 'movies' => $results, 'form' => $form,
         ]);
     }
 

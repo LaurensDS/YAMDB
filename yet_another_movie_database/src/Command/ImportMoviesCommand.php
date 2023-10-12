@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'ImportMoviesCommand',
-    description: 'Add a short description for your command',
+    description: 'Imports popular movies from The Movie Database API',
 )]
 class ImportMoviesCommand extends Command
 {
@@ -41,22 +41,23 @@ class ImportMoviesCommand extends Command
             $tmdbApiKey = $_ENV['TMDB_API_KEY'];
             $tmdbAccessToken = $_ENV['TMDB_ACCESS_TOKEN'];
             $client = new \GuzzleHttp\Client();
-
+    
             $response = $client->request('GET', 'https://api.themoviedb.org/3/discover/movie', [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $tmdbAccessToken,
                     'accept' => 'application/json',
                 ],
             ]);
-
+    
             $moviesData = json_decode($response->getBody(), true);
             $movieRepository = $entityManagerInterface->getRepository(Movie::class);
-
-            
-            foreach ($moviesData['results'] as $movieData) {
+            $batchSize = 20;
+    
+            foreach ($moviesData['results'] as $index => $movieData) {
                 // Check if the movie already exists in the database to avoid duplicates
                 $existingMovie = $movieRepository->findOneBy(['title' => $movieData['title']]);
-
+    
+                if (!$existingMovie) {
                     // Create a Movie entity and populate it with data
                     $movie = new Movie();
                     $movie->setTitle($movieData['title']);
@@ -83,13 +84,17 @@ class ImportMoviesCommand extends Command
                     
                     // Persist the movie to the database
                     $entityManagerInterface->persist($movie);
-                
-                
+    
+                    if (($index % $batchSize) === 0) {
+                        $entityManagerInterface->flush();
+                        $entityManagerInterface->clear(); // Detaches all objects from Doctrine!
+                    }
+                }
             }
-
+    
             // Flush changes to the database once, after importing all movies
             $entityManagerInterface->flush();
-
+    
             $output->writeln('Movies imported successfully.');
         } catch (\Exception $e) {
             $logger->error('Error while importing movies: ' . $e->getMessage());

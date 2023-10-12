@@ -1,4 +1,4 @@
-@import "~bootstrap/scss/bootstrap";
+@import "../../node_modules/bootstrap";
 
 body {
     background-color: lightgray;

@@ -14,7 +14,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
-    name: 'ImportMoviesCommand',
+    name: 'app:import-movies',
     description: 'Imports popular movies from The Movie Database API',
 )]
 class ImportMoviesCommand extends Command

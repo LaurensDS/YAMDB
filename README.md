@@ -1,6 +1,5 @@
 # YAMDB
 
-```markdown
 # Symfony Project with DDEV
 
 This repository contains a Symfony project configured to work with [DDEV](https://ddev.readthedocs.io/en/stable/), a powerful local development environment tool for web projects.
@@ -33,19 +32,19 @@ Before you get started, make sure you have the following software installed on y
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/symfony-ddev-project.git
+   git clone https://github.com/LaurensDS/YAMDB.git
    ```
 
 2. Change your working directory to the project folder:
 
    ```bash
-   cd symfony-ddev-project
+   cd yet_another_movie_database
    ```
 
-3. Copy the `.ddev` directory and `docker-compose.ddev.yaml` file to your project folder:
+3. Run composer
 
    ```bash
-   ddev config
+   composer install
    ```
 
 4. Start the DDEV development environment:
@@ -54,11 +53,15 @@ Before you get started, make sure you have the following software installed on y
    ddev start
    ```
 
+5. Run npm
+
+   ```bash
+   npm run watch
+   ```
+
 ### Usage
 
-- Access the Symfony application at [http://projectname.ddev.site](http://projectname.ddev.site) in your web browser.
-- Access the Symfony dev mode at [http://projectname.ddev.site/app_dev.php](http://projectname.ddev.site/app_dev.php) for development and debugging.
-- The project files are located in the `web` directory, and you can edit your code there.
+- Access the Symfony application at [http://yamdb.ddev.site](http://yamdb.ddev.site) in your web browser.
 
 ## Folder Structure
 
@@ -66,7 +69,6 @@ Before you get started, make sure you have the following software installed on y
 - `src/` - Your Symfony application's source code.
 - `templates/` - Twig templates.
 - `var/` - Application cache and log files.
-- `web/` - Web-accessible files, such as images and CSS.
 - `ddev` - DDEV configuration files.
 
 ## Configuration
@@ -79,7 +81,11 @@ You can customize the DDEV configuration by editing the `.ddev/config.yaml` file
 
 To set up the database schema, you need to run migrations. Use the following commands:
 
-1. Make sure you have configured your database connection in the `.env` file.
+1. Make sure you have configured your database connection in the `.env` file. For DDEV you can run the following command to get the database information:
+
+   ```bash
+   ddev describe
+   ```
 
 2. Generate the migration classes:
 
@@ -102,7 +108,7 @@ To import data from an API, you can use the following custom command:
 2. Execute the API data import command:
 
    ```bash
-   php bin/console ImportMoviesCommand
+   php bin/console app:import-movies
    ```
 
 This command should fetch data from the API and populate your database.

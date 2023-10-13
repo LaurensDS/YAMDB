@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Movie index{% endblock %}
+{% block title %}Movie{% endblock %}
 
 {% block body %}
-    <h1>Movie index</h1>
+    <h1>Movie</h1>
 
 {{ form(form) }}
 
@@ -39,7 +39,7 @@
         </tbody>
     </table>
 
-{# display navigation #}
+{# display pagination #}
 <div class="navigation">
     {{ knp_pagination_render(pagination,'bundles/KnpPaginatorBundle/Pagination/twitter_bootstrap_v4_pagination.html.twig',{},{
         'align': 'center'

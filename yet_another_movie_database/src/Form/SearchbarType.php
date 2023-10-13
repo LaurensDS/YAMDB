@@ -18,10 +18,10 @@ class SearchbarType extends AbstractType
             'attr' => [
                 'placeholder' => 'Search'
             ],
-            'required' => false
+            'required' => true
         ])
         ->add('save', SubmitType::class, [
-            'attr' => ['class' => 'save'],
+            'attr' => ['class' => 'submit'],
         ])
         ->setMethod('GET'); // setMethod GET, otherwise pagination with search does not work
         

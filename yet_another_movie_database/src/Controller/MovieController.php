@@ -27,8 +27,8 @@ class MovieController extends AbstractController
         $form->handleRequest($request);
     
         if ($form->isSubmitted() && $form->isValid()) {
-            $task = $form->getData();
-            $query = $movieRepository->searchByMovieTitle($task); // Assuming you have a custom method for this in your repository
+            $movie = $form->getData();
+            $query = $movieRepository->searchByMovieTitle($movie); // Assuming you have a custom method for this in your repository
         } else {
             $query = $movieRepository->findAll();
         }

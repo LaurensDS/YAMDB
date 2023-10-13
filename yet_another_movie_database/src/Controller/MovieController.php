@@ -16,7 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/movie')]
+#[Route('/')]
 class MovieController extends AbstractController
 {
     #[Route('/', name: 'app_movie_index', methods: ['GET','POST'])]
